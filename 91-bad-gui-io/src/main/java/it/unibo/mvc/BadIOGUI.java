@@ -15,7 +15,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.List;
+import java.nio.file.Path;
+//import java.util.List;
 import java.util.Random;
 
 /**
@@ -42,9 +43,14 @@ public class BadIOGUI {
         final JPanel canvas = new JPanel();
         canvas.setLayout(new BorderLayout());
         final JButton write = new JButton("Write on file");
-        canvas.add(write, BorderLayout.CENTER);
+        final JPanel newPanel = new JPanel();
+        newPanel.setLayout(new BoxLayout(newPanel, BoxLayout.X_AXIS));
+        canvas.add(newPanel, BorderLayout.CENTER);
+        newPanel.add(write);
         frame.setContentPane(canvas);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        final JButton read = new JButton("Read");
+        newPanel.add(read);
         /*
          * Handlers
          */
@@ -60,10 +66,18 @@ public class BadIOGUI {
                  */
                 try (PrintStream ps = new PrintStream(PATH, StandardCharsets.UTF_8)) {
                     ps.print(randomGenerator.nextInt());
+                    System.out.println(Files.readAllLines(Path.of(PATH), StandardCharsets.UTF_8)); //NOPMD: asked by the exercise
                 } catch (IOException e1) {
                     JOptionPane.showMessageDialog(frame, e1, "Error", JOptionPane.ERROR_MESSAGE);
                     e1.printStackTrace(); // NOPMD: allowed as this is just an exercise
                 }
+            }
+        });
+        read.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                System.out.println(randomGenerator.nextInt()); //NOPMD: this is asked by the exercise 
             }
         });
     }
@@ -87,6 +101,7 @@ public class BadIOGUI {
          * on screen. Results may vary, but it is generally the best choice.
          */
         frame.setLocationByPlatform(true);
+        frame.pack();
         /*
          * OK, ready to push the frame onscreen
          */
